@@ -1,0 +1,79 @@
+from __future__ import print_function
+import random
+
+wordpool = 'pillow blanket rockstar blood bomb train smoke wall wail'.split()
+
+def getRandomWord(wordpool):
+    wordIndex = random.randint(0, len(wordpool) - 1)
+    return wordpool[wordIndex]
+
+def showCurrent(missedLetters, correctLetters, word):
+    for letters in missedLetters:
+        print(letters, end=' ')
+
+    print('\n')
+
+    for letters in word:
+        if (letters in correctLetters):
+            print(letters, end=' ')
+        else:
+            print('-', end=' ')
+
+def getGuess(alreadyGuess):
+    while True:
+        print('\nGuess a letter')
+        guess = raw_input().lower()
+        if len(guess) != 1:
+            print('Guess must be one letter')
+        elif guess in alreadyGuess:
+            print('This letter has already been guessed')
+        elif guess not in 'abcdefghijklmnopqrstuvwxyz':
+            print('This is not a letter!')
+        else:
+            return guess
+
+def isGameOver(lives, missed):
+    if (missed > lives):
+        return True
+        print('GAME OVER')
+    else:
+        return False
+
+print('PLAY HANGMAN')
+missedLetters = ''
+correctLetters = ''
+word = getRandomWord(wordpool)
+gameOver = False;
+winState = False;
+lives = 5;
+
+while True:
+    showCurrent(missedLetters, correctLetters, word)
+    guess = getGuess(missedLetters + correctLetters)
+    if guess in word:
+        correctLetters = correctLetters + guess
+        print (correctLetters)
+    elif guess not in word:
+        missedLetters = missedLetters + guess
+
+    for letters in word:
+        if (letters not in correctLetters):
+            winState = False
+            break
+        winState = True
+    if (winState):
+        print('You win!')
+    else:
+        gameOver = isGameOver(lives, len(missedLetters))
+
+    if (gameOver or winState):
+        print('PLAY AGAIN? (y/n)')
+        if (not raw_input().lower().startswith('y')):
+            break
+        else:
+            missedLetters = ''
+            correctLetters = ''
+            word = getRandomWord(wordpool)
+            gameOver = False
+            winState = False
+            lives = 5
